@@ -1,0 +1,4 @@
+Here we go again... 🚀
+
+${application.title} - v${application.version}
+Powered by @danisanga

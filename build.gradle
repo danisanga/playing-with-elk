@@ -1,0 +1,117 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.0'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+group = 'com.danisanga'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.security:spring-security-core:6.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.2.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.23.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.0'
+	implementation 'org.apache.commons:commons-lang3:3.14.0'
+	implementation 'org.modelmapper:modelmapper:3.2.0'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-gson:0.12.3'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'com.h2database:h2:2.1.212'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation 'org.mockito:mockito-core:5.10.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    runtimeOnly 'org.postgresql:postgresql'
+    // To fix M1 chips issues.
+    runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.80.Final:osx-aarch_64'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+test {
+	testLogging {
+		events "PASSED", "SKIPPED", "FAILED"
+	}
+	ignoreFailures = true
+	finalizedBy jacocoTestReport
+}
+
+jacoco {
+	toolVersion = "0.8.8"
+	reportsDirectory = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = 	true
+		html.required = true
+		csv.required = 	false
+	}
+}
+
+/*
+************************************************************************************
+************************ Task to obtain a clear test report ************************
+************************************************************************************
+*/
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+tasks.withType(Test) {
+	testLogging {
+		events TestLogEvent.FAILED,
+				TestLogEvent.PASSED
+
+		exceptionFormat TestExceptionFormat.FULL
+		showExceptions true
+		showCauses true
+		showStackTraces true
+
+		debug {
+			events 	TestLogEvent.FAILED,
+					TestLogEvent.PASSED
+
+			exceptionFormat TestExceptionFormat.FULL
+		}
+		info.events = debug.events
+		info.exceptionFormat = debug.exceptionFormat
+
+		afterSuite { desc, result ->
+			if (!desc.parent) {
+				def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+				def startItem = '|  ', endItem = '  |'
+				def repeatLength = startItem.length() + output.length() + endItem.length()
+				println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+			}
+		}
+	}
+}
