@@ -10,3 +10,4 @@ demonstrating the efficacy of handling log data efficiently.
 https://auth0.com/blog/spring-boot-logs-aggregation-and-monitoring-using-elk-stack/
 https://www.elastic.co/guide/en/elasticsearch/reference/8.13/elasticsearch-intro.html
 https://www.elastic.co/guide/en/elasticsearch/reference/8.13/docker.html
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html

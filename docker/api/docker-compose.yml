@@ -24,7 +24,7 @@ services:
     volumes:
       - elk-volume:/var/lib/postgresql/data
     env_file:
-      - postgres.dev.env
+      - ../../postgres.dev.env
 
 volumes:
   elk-volume:
