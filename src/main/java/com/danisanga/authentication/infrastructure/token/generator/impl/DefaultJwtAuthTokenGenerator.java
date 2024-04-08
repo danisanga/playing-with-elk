@@ -53,6 +53,7 @@ public class DefaultJwtAuthTokenGenerator implements JwtAuthTokenGenerator {
         final Claims claims = Jwts.claims().subject(email).build();
         final Date tokenCreateTime = new Date();
         final Date tokenValidity = getTokenValidityDate(tokenCreateTime);
+        LOGGER.info("JWT token generated for: {}", email);
         return Jwts.builder()
                 .claims(claims)
                 .expiration(tokenValidity)
