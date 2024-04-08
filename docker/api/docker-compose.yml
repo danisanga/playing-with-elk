@@ -13,7 +13,7 @@ services:
       - "8080:8080"
     volumes:
       - elk-gradle-cache:/home/gradle/.gradle
-    build: .
+    build: ../../
 
   playing-with-elk-db:
     container_name: db
@@ -24,7 +24,7 @@ services:
     volumes:
       - elk-volume:/var/lib/postgresql/data
     env_file:
-      - ../../postgres.dev.env
+      - postgres.dev.env
 
 volumes:
   elk-volume:

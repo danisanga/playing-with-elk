@@ -1,6 +1,5 @@
 FROM gradle:8.6.0-jdk17-alpine AS build
-# TODO - Fix PATH (../../), it's failing since I move Docker files to this specific directory...
-COPY --chown=gradle:gradle ../../ /home/gradle/src
+COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle clean build -x test --no-daemon
 
